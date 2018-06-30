@@ -30,6 +30,8 @@ int main(int argc, char const *argv[]){
     double fx = K(0,0);
 
     int k(1);
+    std::vector<cv::Point2f> previousFrame2DPoints, currFrame2DPoints;
+    cv::Mat previousImage;
     for(int i=0;i<num_images;i++)
     {
         if(i == std::pow(10,k)){
@@ -53,9 +55,9 @@ int main(int argc, char const *argv[]){
         if(rightImage.cols <= 0 || rightImage.rows <= 0){
             throw std::runtime_error("can not read rightImage and its path is : "+ right_image_name);
         }
-        std::vector<cv::Point2f> previousFrame2DPoints, currFrame2DPoints;
-        slam.estimate3D2DFrontEndWithOpicalFlow(leftImage,rightImage,previousFrame2DPoints,currFrame2DPoints,leftImage);
-
+        Sophus::SE3 estimatedPose;
+        estimatedPose = slam.estimate3D2DFrontEndWithOpicalFlow(leftImage, rightImage, previousFrame2DPoints, currFrame2DPoints, previousImage);
+        std::cout<<"estimated pose: "<<std::endl<<estimatedPose.matrix() <<std::endl;
     }
 
 

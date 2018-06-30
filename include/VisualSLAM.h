@@ -33,7 +33,7 @@ public:
 
 
     //TO DO estimate3D2DFrontEndWithOpicalFlow()
-    Sophus::SE3 estimate3D2DFrontEndWithOpicalFlow(cv::Mat leftImage, cv::Mat rightImage, std::vector<cv::Point2f>
-            &previousFrame2DPoints, std::vector<cv::Point2f>&currFrame2DPoints,cv::Mat &peviousImage);
+    Sophus::SE3 estimate3D2DFrontEndWithOpicalFlow(cv::Mat leftImage_, cv::Mat rightImage, std::vector<cv::Point2f>
+            &previousFrame2DPoints, std::vector<cv::Point2f>&currFrame2DPoints,cv::Mat& previousImage);
 
 };
