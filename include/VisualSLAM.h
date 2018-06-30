@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <cmath>
 // project file
 #include "BundleAdjuster.h"
 #include "Map.h"
@@ -35,5 +36,6 @@ public:
     //TO DO estimate3D2DFrontEndWithOpicalFlow()
     Sophus::SE3 estimate3D2DFrontEndWithOpicalFlow(cv::Mat leftImage_, cv::Mat rightImage, std::vector<cv::Point2f>
             &previousFrame2DPoints, std::vector<cv::Point2f>&currFrame2DPoints,cv::Mat& previousImage);
+
 
 };

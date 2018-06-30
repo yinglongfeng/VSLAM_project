@@ -39,63 +39,81 @@ Sophus::SE3 VisualSLAM::estimate3D2DFrontEndWithOpicalFlow(cv::Mat leftImage_, c
     cv::TermCriteria termcrit(cv::TermCriteria::COUNT|cv::TermCriteria::EPS,20,0.03);
 
     if( previousFrame2DPoints.empty()){
-        std::cout<<" previousFram2DPoints size "<<previousFrame2DPoints.size() << std::endl;
+        std::cout<<"The first image "<<std::endl;
         //TO DO Harris Detection
 
-        cv::goodFeaturesToTrack(leftImage,currFrame2DPoints,maxCorners,0.01,10,cv::Mat(),3,3,false,0.01);
+        cv::goodFeaturesToTrack(leftImage,currFrame2DPoints,maxCorners,0.01,10,cv::Mat(),3,3,false,0.04);
         cv::cornerSubPix(leftImage,currFrame2DPoints,subPixel,cv::Size(-1,-1),termcrit);
+        std::cout << "step1 check feature size " << currFrame2DPoints.size() << std::endl;
 
+
+        /*
         // test corners detection results
-    /*std::cout<<"** Number of corners detected: "<<currFrame2DPoints.size()<<std::endl;
-    for (size_t i=0; i<currFrame2DPoints.size(); i++)
-    cv::circle(leftImage, currFrame2DPoints[i], 4, cv::Scalar(200,0,0));
-    cv::namedWindow("leftImage",CV_WINDOW_AUTOSIZE);
-    cv::imshow("leftImage",leftImage);
-    cv::waitKey(); */
-
+        std::cout<<"** Number of corners detected: "<<currFrame2DPoints.size()<<std::endl;
+        for (size_t i=0; i<currFrame2DPoints.size(); i++)
+        cv::circle(leftImage, currFrame2DPoints[i], 4, cv::Scalar(200,0,0));
+        cv::namedWindow("leftImage",CV_WINDOW_AUTOSIZE);
+        cv::imshow("leftImage",leftImage);
+        cv::waitKey();
+         */
         //TO DO getDisparityMapFromCurrImage
-        
-        //TO DO getDepth3DPointsFromCurrImage
-
+        // Define the first image as the world coordinate
+        std::vector<cv::Point3f> p3d;
+        VO.generateDisparityMap(leftImage,rightImage);
+        p3d = VO.getDepth3DPointsFromCurrImage(currFrame2DPoints,K);
+        int maxDistance = 150 ;
+        for (int i = 0; i <p3d.size() ; ++i) {
+            if (p3d[i].z > maxDistance ){
+//                std::cout<<"depth "<<p3d[i]<<std::endl;
+                p3d.erase(p3d.begin()+i);
+                currFrame2DPoints.erase(currFrame2DPoints.begin()+i);
+            }
+//            else if (std::isnan(p3d[i].z)){
+//                p3d.erase(p3d.begin()+i);
+//                currFrame2DPoints.erase(currFrame2DPoints.begin()+i);
+//            }
+        }
+        std::cout<<"p3d size "<<p3d.size()<<"  currFrame2DPoints size"<<currFrame2DPoints.size()<<std::endl;
+        std::cout << "step 2 check feature size after erase " << currFrame2DPoints.size() << std::endl;
 
         leftImage.copyTo(previousImage);
         previousFrame2DPoints.clear();
         previousFrame2DPoints=currFrame2DPoints;
         currFrame2DPoints.clear();
-        std::cout<<" Just for the first image "<<std::endl;
-        std::cout<<" previousFram2DPoints size "<<previousFrame2DPoints.size() << std::endl;
         return pose;
     }
 
     //TO DO featureTracking
     std::vector<uchar> status;
     status = VO.corr2DPointsFromPreFrame2DPoints(previousImage,leftImage,previousFrame2DPoints,currFrame2DPoints);
-    std::vector<cv::Point2f> trackedCurrFrame2DPoints;
+    std::vector<cv::Point2f> trackedCurrFrame2DPoints , trackedPreviousFrame2DPoints;
     for (int i = 0; i <status.size() ; ++i) {
         if ( status[i] == 1) {
-            //TO DO delete 3D points in the previousFrame erase
-
+            //TO DO delete 3D points in the previousFrame
+            trackedPreviousFrame2DPoints.push_back(previousFrame2DPoints[i]);
             trackedCurrFrame2DPoints.push_back(currFrame2DPoints[i]);
+
         }
     }
-    std::cout<<" currFrame2DPoints size "<<currFrame2DPoints.size() << std::endl;
-    std::cout<<" trackedCurrFrame2DPoints size "<<trackedCurrFrame2DPoints.size() << std::endl;
 
     //TO DO getDisparityMapFromPreviousImage
     //TO DO getDepth3DPointsFromPreviousImage
+    std::vector<cv::Point3f> p3DCurrFrame;
+    VO.generateDisparityMap(leftImage,rightImage);
+    p3DCurrFrame = VO.getDepth3DPointsFromCurrImage(trackedCurrFrame2DPoints,K);
+
+    std::cout<<"previousFrame2DPoints size "<<previousFrame2DPoints.size() << std::endl;
+    std::cout<<"currFrame2DPoints size "<<currFrame2DPoints.size() << std::endl;
+    std::cout<<"trackedCurrFrame2DPoints size "<<trackedCurrFrame2DPoints.size() << std::endl;
+    std::cout<<"p2d size "<<trackedPreviousFrame2DPoints.size() << std::endl;
+    std::cout<<"p3d size  "<<p3DCurrFrame.size()<<std::endl;
 
     //TO DO poseEstimate3D2DPnp
-
-
+    pose=VO.poseEstimate2D3DPNP(p3DCurrFrame,trackedPreviousFrame2DPoints,K);
 
     previousFrame2DPoints.clear();
     previousFrame2DPoints=trackedCurrFrame2DPoints;
     currFrame2DPoints.clear();
 
-    Eigen::Matrix3d tmpMatrix;
-    tmpMatrix << 1 , 0.2 , 0.3 , 4 , 5 , 6 , 7 , 8 , 9 ;
-    pose.setRotationMatrix(tmpMatrix);
     return pose;
-
-
 }

@@ -56,4 +56,63 @@ terminate called after throwing an instance of 'cv::Exception'
          leftImage.copyTo(previousImage);
 #solve:  peviousImage -->previousImage
 
+##8
+pose inverse: 
+   0.999909  0.00579727  -0.0121905   0.0209951
+-0.00581122    0.999982 -0.00110984  0.00340523
+  0.0121838  0.00118058    0.999925  -0.0316706
+          0           0           0           1
+
+change 
+for (int i = 0; i <status.size() ; ++i) {
+        if ( status[i] == 1) {
+            //TO DO delete 3D points in the previousFrame
+
+            trackedCurrFrame2DPoints.push_back(currFrame2DPoints[i]);
+        }
+        else if (status[i] == 0 ){
+            currFrame2DPoints.erase(currFrame2DPoints.begin()+i);
+            previousFrame2DPoints.erase(previousFrame2DPoints.begin()+i);
+        }
+    }
+
+to
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

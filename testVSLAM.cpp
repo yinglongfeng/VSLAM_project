@@ -4,10 +4,10 @@
 
 int main(int argc, char const *argv[]){
 
-    std::cout<<"hello my slam "<<std::endl;
+//    std::cout<<"hello my slam "<<std::endl;
     VisualSLAM slam;
 
-    std::cout<<"get test value from Map.h:  "<<slam.getTestValueFromMap()<<std::endl;
+//    std::cout<<"get test value from Map.h:  "<<slam.getTestValueFromMap()<<std::endl;
 
     if(argc < 5) {
         std::cout<<"/slam  left_image_directory right_image_directory camera_intrinsics_file num_images"<<std::endl;
