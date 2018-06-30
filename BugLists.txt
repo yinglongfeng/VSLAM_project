@@ -79,6 +79,28 @@ for (int i = 0; i <status.size() ; ++i) {
 to
 
 
+##9 wrong pose estimation
+pose inverse: 
+   0.999909  0.00579727  -0.0121905   0.0209951
+-0.00581122    0.999982 -0.00110984  0.00340523
+  0.0121838  0.00118058    0.999925  -0.0316706
+          0           0           0           1
+
+
+#solve: x and y position is totally wrong
+
+std::vector<cv::Point3f> VisualOdometry::getDepth3DPointsFromCurrImage()
+{
+  float disparity = disparityMap.at<float>(point2D.x, point2D.y);
+}
+------------------------->
+
+std::vector<cv::Point3f> VisualOdometry::getDepth3DPointsFromCurrImage()
+{
+  float disparity = disparityMap.at<float>(point2D.y, point2D.x);
+}
+
+
 
 
 

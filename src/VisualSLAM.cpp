@@ -68,10 +68,10 @@ Sophus::SE3 VisualSLAM::estimate3D2DFrontEndWithOpicalFlow(cv::Mat leftImage_, c
                 p3d.erase(p3d.begin()+i);
                 currFrame2DPoints.erase(currFrame2DPoints.begin()+i);
             }
-//            else if (std::isnan(p3d[i].z)){
-//                p3d.erase(p3d.begin()+i);
-//                currFrame2DPoints.erase(currFrame2DPoints.begin()+i);
-//            }
+            else if (std::isnan(p3d[i].z)){
+                p3d.erase(p3d.begin()+i);
+                currFrame2DPoints.erase(currFrame2DPoints.begin()+i);
+            }
         }
         std::cout<<"p3d size "<<p3d.size()<<"  currFrame2DPoints size"<<currFrame2DPoints.size()<<std::endl;
         std::cout << "step 2 check feature size after erase " << currFrame2DPoints.size() << std::endl;
@@ -101,6 +101,20 @@ Sophus::SE3 VisualSLAM::estimate3D2DFrontEndWithOpicalFlow(cv::Mat leftImage_, c
     std::vector<cv::Point3f> p3DCurrFrame;
     VO.generateDisparityMap(leftImage,rightImage);
     p3DCurrFrame = VO.getDepth3DPointsFromCurrImage(trackedCurrFrame2DPoints,K);
+    int maxDistance = 150 ;
+    for (int i = 0; i <p3DCurrFrame.size() ; ++i) {
+        if (p3DCurrFrame[i].z > maxDistance ){
+//                std::cout<<"depth "<<p3d[i]<<std::endl;
+            p3DCurrFrame.erase(p3DCurrFrame.begin()+i);
+            currFrame2DPoints.erase(currFrame2DPoints.begin()+i);
+            trackedPreviousFrame2DPoints.erase(trackedPreviousFrame2DPoints.begin()+i);
+        }
+        else if (std::isnan(p3DCurrFrame[i].z)){
+            p3DCurrFrame.erase(p3DCurrFrame.begin()+i);
+            currFrame2DPoints.erase(currFrame2DPoints.begin()+i);
+            trackedPreviousFrame2DPoints.erase(trackedPreviousFrame2DPoints.begin()+i);
+        }
+    }
 
     std::cout<<"previousFrame2DPoints size "<<previousFrame2DPoints.size() << std::endl;
     std::cout<<"currFrame2DPoints size "<<currFrame2DPoints.size() << std::endl;
@@ -112,7 +126,7 @@ Sophus::SE3 VisualSLAM::estimate3D2DFrontEndWithOpicalFlow(cv::Mat leftImage_, c
     pose=VO.poseEstimate2D3DPNP(p3DCurrFrame,trackedPreviousFrame2DPoints,K);
 
     previousFrame2DPoints.clear();
-    previousFrame2DPoints=trackedCurrFrame2DPoints;
+    previousFrame2DPoints=trackedPreviousFrame2DPoints;
     currFrame2DPoints.clear();
 
     return pose;
