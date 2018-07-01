@@ -19,6 +19,9 @@ private:
 //    std::vector<unsigned char> status;
     float baseline = 0.53716;
     cv::Mat disparityMap;
+//    std::vector<Sophus::SE3> historyPose;
+    bool reInitial;
+    int thresholdFeactures=100;
 public:
     VisualOdometry() {};
 
@@ -34,5 +37,10 @@ public:
     std::vector<cv::Point3f> getDepth3DPointsFromCurrImage(std::vector<cv::Point2f>& currFrame2DPoints,Eigen::Matrix3d K);
 
     //TO DO poseEstimate2D3DPnp
-    Sophus::SE3 poseEstimate2D3DPNP(std::vector<cv::Point3f>& p3d, std::vector<cv::Point2f>& p2d,Eigen::Matrix3d K);
+    Sophus::SE3 poseEstimate2D3DPNP(std::vector<cv::Point3f>& p3d, std::vector<cv::Point2f>& p2d,Eigen::Matrix3d K,Sophus::SE3 prePose);
+
+    //TO DO getReIntial
+    bool getReInitial();
+
+    void setReInitial();
 };
