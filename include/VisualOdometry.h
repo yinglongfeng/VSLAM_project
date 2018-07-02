@@ -20,8 +20,8 @@ private:
     float baseline = 0.53716;
     cv::Mat disparityMap;
 //    std::vector<Sophus::SE3> historyPose;
-    bool reInitial;
-    int thresholdFeactures=100;
+    bool reInitial = false ;
+    int thresholdFeactures=200;
 public:
     VisualOdometry() {};
 

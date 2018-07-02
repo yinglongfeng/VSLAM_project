@@ -38,7 +38,6 @@ bool VisualOdometry::getReInitial() {
 
 void VisualOdometry::setReInitial() {
     this->reInitial = false ;
-    std::cout<<"reInitial "<<reInitial<<std::endl;
 }
 
 cv::Rect VisualOdometry::computeROIDisparityMap(cv::Size2i src_sz,
@@ -177,7 +176,7 @@ Sophus::SE3 VisualOdometry::poseEstimate2D3DPNP(std::vector<cv::Point3f> &p3d, s
 //    historyPose.push_back(posePnp.inverse());
 
     std::cout<<"pose norm: "<<std::endl<<posePnp.log().norm() <<std::endl;
-    int MAXPoseNorm = 1;
+    int MAXPoseNorm = 80;
     if (posePnp.log().norm() > MAXPoseNorm){
         posePnp = prePose;
     }
