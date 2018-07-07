@@ -14,7 +14,7 @@ std::vector<uchar> VisualOdometry::corr2DPointsFromPreFrame2DPoints(cv::Mat prev
     cv::TermCriteria termcrit(cv::TermCriteria::COUNT|cv::TermCriteria::EPS,20,0.03);
 
     cv::calcOpticalFlowPyrLK(previousImage, currImage, previousFrame2DPoints_,currFrame2DPoints,status,err,winSize,maxLevel,termcrit,0.001);
-    std::cout<< "currFrame2DPoints size : "<< currFrame2DPoints.size()<<std::endl;
+//    std::cout<< "currFrame2DPoints size : "<< currFrame2DPoints.size()<<std::endl;
     // trackedCurrFrame2DPoints
 
 //    std::cout<<" trackedCurrFrame2DPoints size "<<trackedCurrFrame2DPoints.size() << std::endl;
@@ -175,7 +175,7 @@ Sophus::SE3 VisualOdometry::poseEstimate2D3DPNP(std::vector<cv::Point3f> &p3d, s
 //    std::cout<<"pose inverse: "<<std::endl<<posePnp.inverse().matrix()<<std::endl;
 //    historyPose.push_back(posePnp.inverse());
 
-    std::cout<<"pose norm: "<<std::endl<<posePnp.log().norm() <<std::endl;
+//    std::cout<<"pose norm: "<<std::endl<<posePnp.log().norm() <<std::endl;
     int MAXPoseNorm = 80;
     if (posePnp.log().norm() > MAXPoseNorm){
         posePnp = prePose;

@@ -76,7 +76,6 @@ int main(int argc, char const *argv[]){
 
         prePose = estimatedPose;
 
-
         //visualization
         Sophus::SE3 cumPose;
         if (i != 0){

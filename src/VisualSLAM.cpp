@@ -103,7 +103,7 @@ Sophus::SE3 VisualSLAM::estimate3D2DFrontEndWithOpicalFlow(cv::Mat leftImage_, c
                 currFrame2DPoints.erase(currFrame2DPoints.begin()+i);
             }
         }
-        std::cout<<"p3d size "<<p3d.size()<<"  currFrame2DPoints size "<<currFrame2DPoints.size()<<std::endl;
+//        std::cout<<"p3d size "<<p3d.size()<<"  currFrame2DPoints size "<<currFrame2DPoints.size()<<std::endl;
 
         //TO DO add3DPoints (p3d, p2dToP3dIndices)
         //TO DO add2DPoints (p2d, p2dToP3dIndices)
@@ -116,9 +116,9 @@ Sophus::SE3 VisualSLAM::estimate3D2DFrontEndWithOpicalFlow(cv::Mat leftImage_, c
          */
 
         map.add2DPoints(currFrame2DPoints,p2dToP3dIndices, true);
-        map.updatePoseIndex();
         map.updateCumPose(pose);
         map.add3DPoints(p3d,p2dToP3dIndices);
+        map.updatePoseIndex();
 
         leftImage.copyTo(previousImage);
         previousFrame2DPoints.clear();
@@ -148,17 +148,14 @@ Sophus::SE3 VisualSLAM::estimate3D2DFrontEndWithOpicalFlow(cv::Mat leftImage_, c
     VO.generateDisparityMap(leftImage,rightImage);
     p3DCurrFrame = VO.getDepth3DPointsFromCurrImage(trackedCurrFrame2DPoints,K);
 
-    std::cout<<"previousFrame2DPoints size "<<previousFrame2DPoints.size() << std::endl;
-    std::cout<<"currFrame2DPoints size "<<currFrame2DPoints.size() << std::endl;
-    std::cout<<"trackedCurrFrame2DPoints size "<<trackedCurrFrame2DPoints.size() << std::endl;
-    std::cout<<"p2d size "<<trackedPreviousFrame2DPoints.size() << std::endl;
-    std::cout<<"p3d size  "<<p3DCurrFrame.size()<<std::endl;
+//    std::cout<<"previousFrame2DPoints size "<<previousFrame2DPoints.size() << std::endl;
+//    std::cout<<"currFrame2DPoints size "<<currFrame2DPoints.size() << std::endl;
+//    std::cout<<"trackedCurrFrame2DPoints size "<<trackedCurrFrame2DPoints.size() << std::endl;
+//    std::cout<<"p2d size "<<trackedPreviousFrame2DPoints.size() << std::endl;
+//    std::cout<<"p3d size  "<<p3DCurrFrame.size()<<std::endl;
 
     //TO DO poseEstimate3D2DPnp
     pose=VO.poseEstimate2D3DPNP(p3DCurrFrame,trackedPreviousFrame2DPoints,K,prePose);
-
-    map.updatePoseIndex();
-    map.updateCumPose(pose);
 
     //TO DO reInitial
     if (VO.getReInitial()){
@@ -167,7 +164,7 @@ Sophus::SE3 VisualSLAM::estimate3D2DFrontEndWithOpicalFlow(cv::Mat leftImage_, c
         currFrame2DPoints.clear();
         cv::goodFeaturesToTrack(leftImage,currFrame2DPoints,maxCorners,0.01,10,cv::Mat(),3,3,false,0.04);
         cv::cornerSubPix(leftImage,currFrame2DPoints,subPixel,cv::Size(-1,-1),termcrit);
-        std::cout << "step1 check feature size " << currFrame2DPoints.size() << std::endl;
+//        std::cout << "step1 check feature size " << currFrame2DPoints.size() << std::endl;
 
         //TO DO getDisparityMapFromCurrImage
         std::vector<cv::Point3f> p3d;
@@ -186,33 +183,60 @@ Sophus::SE3 VisualSLAM::estimate3D2DFrontEndWithOpicalFlow(cv::Mat leftImage_, c
             }
         }
         trackedPreviousFrame2DPoints = currFrame2DPoints ;
-        std::cout<<" re-initial p3d size "<<p3d.size()<<"  re-initial currFrame2DPoints size"<<currFrame2DPoints.size()<<std::endl;
+//        std::cout<<" re-initial p3d size "<<p3d.size()<<"  re-initial currFrame2DPoints size"<<currFrame2DPoints.size()<<std::endl;
 
         std::vector<int> p2dToP3dIndices(p3d.size());
         std::iota(p2dToP3dIndices.begin(),p2dToP3dIndices.end(),0);
         map.add2DPoints(currFrame2DPoints,p2dToP3dIndices, true);
-        map.updatePoseIndex();
-        map.updateCumPose(pose);
+//        map.updatePoseIndex();
+//        map.updateCumPose(pose);
         map.add3DPoints(p3d,p2dToP3dIndices);
 
         VO.setReInitial();
 //        return pose;
     }
 
+//    // optimization 0-->400
+//    int keyFrameStep = 1 ;//3;
+//    int InitialnumKeyFrames =30 ;//10
+////    if (map.getCurrFrameIndex() % (InitialnumKeyFrames*keyFrameStep) == 0 && map.getCurrFrameIndex() > 0 && map.getCurrFrameIndex() <InitialnumKeyFrames*keyFrameStep +1)
+//        if (map.getCurrFrameIndex() % (InitialnumKeyFrames*keyFrameStep) == 0 && map.getCurrFrameIndex() > 0 ){
+//        std::cout<<"before ba  " <<std::endl;
+//        map.printCumPose();
+//        std::vector<Sophus::SE3> newPoseVector;
+//        newPoseVector = BA.optimizeLocalPoseBA_ceres(map, keyFrameStep, InitialnumKeyFrames);
+//
+////        int startFrame =  map.getCurrFrameIndex() - keyFrameStep*InitialnumKeyFrames;
+////        int newPoseVectorIndex = startFrame;
+////        for (int i = startFrame; i < map.getCurrFrameIndex(); i+=keyFrameStep) {
+////            map.setCumPose(i,newPoseVector[newPoseVectorIndex]);
+////            newPoseVectorIndex ++ ;
+////        }
+//
+//        std::cout<<"after ba  " <<std::endl;
+//        map.printCumPose();
+//    }
 
+    map.updateCumPose(pose);
+    map.updatePoseIndex();
     previousFrame2DPoints.clear();
     previousFrame2DPoints=currFrame2DPoints;
-//    previousFrame2DPoints=trackedPreviousFrame2DPoints;
-//    currFrame2DPoints.clear();
     leftImage.copyTo(previousImage);
 
     return pose;
 }
 
+Sophus::SE3 VisualSLAM::getPose(int k) {
+    if (k<0 || k > map.getCumPose().size()){
+        throw std::runtime_error("VisualSLAM::getPose(int k): Index out of the bounds");
+    }
+    return map.getCumPose().at(k);
+}
+
 
 // visualization
 void VisualSLAM::plotTrajectoryNextStep(cv::Mat& window, int index, Eigen::Vector3d& translGTAccumulated, Eigen::Vector3d& translEstimAccumulated,
-                                            Sophus::SE3 groundTruthPose, Sophus::SE3 groundTruthPrevPose, Eigen::Matrix3d& cumR, Sophus::SE3 estimPose,  Sophus::SE3 estimPrevPose){
+                                        Sophus::SE3 groundTruthPose, Sophus::SE3 groundTruthPrevPose, Eigen::Matrix3d& cumR, Sophus::SE3 estimPose,  Sophus::SE3 estimPrevPose){
     int offsetX = 200;
     int offsetY = 500;
     Sophus::SE3 pose = estimPose.inverse();
@@ -225,19 +249,10 @@ void VisualSLAM::plotTrajectoryNextStep(cv::Mat& window, int index, Eigen::Vecto
         translGTAccumulated = translGTAccumulated + (groundTruthPose.so3().inverse()*groundTruthPrevPose.so3())*(groundTruthPose.translation() - groundTruthPrevPose.translation());
         translEstimAccumulated = translEstimAccumulated + (pose.so3().inverse()*prevPose.so3())*(pose.translation() - prevPose.translation());
     }
-//    cv::circle(window, cv::Point2d(offsetX + translGTAccumulated[0], offsetX + translGTAccumulated[2]), 3, cv::Scalar(0,0,255), -1);
-//    cv::circle(window, cv::Point2f(offsetX + translEstimAccumulated[0], offsetY + translEstimAccumulated[2]), 3, cv::Scalar(0,255,0), -1);
     cv::circle(window, cv::Point2d(offsetX + translGTAccumulated[0], offsetY - translGTAccumulated[2]), 3, cv::Scalar(0,0,255), -1);
     cv::circle(window, cv::Point2f(offsetX + translEstimAccumulated[0], offsetY - translEstimAccumulated[2]), 3, cv::Scalar(0,255,0), -1);
     cv::imshow("Trajectory", window);
     cv::waitKey(3);
     cumR = cumR*pose.so3().matrix();
 
-}
-
-Sophus::SE3 VisualSLAM::getPose(int k) {
-    if (k<0 || k > map.getCumPose().size()){
-        throw std::runtime_error("VisualSLAM::getPose(int k): Index out of the bounds");
-    }
-    return map.getCumPose().at(k);
 }
