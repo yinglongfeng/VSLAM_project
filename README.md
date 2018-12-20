@@ -11,8 +11,12 @@ For the 3rd lib, have a reference of the orbslam2 github
 ###sudo make install
 
 # run the code
-####./testVSLAM ../data/left_image/ ../data/right_image/ 10 ../data/calib.txt
-####./testVSLAM ../../../VisualSLAM/data/00/image_0/  ../../../VisualSLAM/data/00/image_1/ 1000 ../../../VisualSLAM/data/00/calib.txt
+```
+./testVSLAM ../data/left_image/ ../data/right_image/ 10 ../data/calib.txt
+```
+```
+./testVSLAM ../../../VisualSLAM/data/00/image_0/  ../../../VisualSLAM/data/00/image_1/ 1000 ../../../VisualSLAM/data/00/calib.txt
+```
 
 
 
