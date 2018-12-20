@@ -29,11 +29,11 @@ class VisualSLAM {
  public:
   VisualSLAM();
   int getTestValueFromMap();
-  //TO DO get camera intrinsics
+  //TODO get camera intrinsics.
   Eigen::Matrix3d getCameraIntrinsics(std::string camera_intrinsics_path);
   Sophus::SE3 getPose(int k);
 
-  //TO DO estimate3D2DFrontEndWithOpicalFlow()
+  //TODO estimate3D2DFrontEndWithOpicalFlow().
   Sophus::SE3 estimate3D2DFrontEndWithOpicalFlow(cv::Mat leftImage_,
                                                  cv::Mat rightImage,
                                                  std::vector<cv::Point2f>

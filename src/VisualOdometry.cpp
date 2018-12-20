@@ -1,7 +1,7 @@
 #include "VisualOdometry.h"
 
-//TO DO harrisDection
-//TO DO featureTracking
+//TODO harrisDection.
+//TODO featureTracking.
 std::vector<uchar> VisualOdometry::corr2DPointsFromPreFrame2DPoints(cv::Mat previousImage,
                                                                     cv::Mat currImage,
                                                                     std::vector<cv::Point2f> &previousFrame2DPoints_,
@@ -110,7 +110,7 @@ void VisualOdometry::generateDisparityMap(const cv::Mat image_left, const cv::Ma
   filtered_disp_vis.convertTo(true_dmap, CV_32F, 1.0, 0.0);
   disparityMap = true_dmap;
 }
-//TO DO get3DPoints
+//TODO get3DPoints.
 std::vector<cv::Point3f> VisualOdometry::getDepth3DPointsFromCurrImage(std::vector<cv::Point2f> &currFrame2DPoints,
                                                                        Eigen::Matrix3d K) {
   float fx = K(0, 0);
@@ -159,7 +159,7 @@ std::vector<cv::Point3f> VisualOdometry::getDepth3DPointsFromCurrImage(std::vect
   return Points;
 }
 
-//TO DO poseEstimate2D3DPnp
+//TODO poseEstimate2D3DPnp.
 Sophus::SE3 VisualOdometry::poseEstimate2D3DPNP(std::vector<cv::Point3f> &p3d,
                                                 std::vector<cv::Point2f> &p2d,
                                                 Eigen::Matrix3d K,

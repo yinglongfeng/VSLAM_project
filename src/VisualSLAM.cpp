@@ -6,7 +6,7 @@ int VisualSLAM::getTestValueFromMap() {
   return map.getValue();
 }
 
-//TO DO get camera intrinsics
+//TODO get camera intrinsics.
 Eigen::Matrix3d VisualSLAM::getCameraIntrinsics(std::string camera_intrinsics_path) {
 //    std::cout<<"camera_intrinsics_path is: "<<camera_intrinsics_path<<std::endl;
   std::ifstream file(camera_intrinsics_path);
@@ -58,11 +58,11 @@ void VisualSLAM::readGroundTruthData(std::string fileName,
   }
 }
 
-//TODO poseEstimate3D2DFrontEndWithOpicalFlow()  return pose
-//TODO harrisDection
-//TODO featureTracking
-//TODO poseEstimate2D3DPnp
-//TODO reInitialize
+//TODO poseEstimate3D2DFrontEndWithOpicalFlow()  return pose.
+//TODO harrisDection.
+//TODO featureTracking.
+//TODO poseEstimate2D3DPnp.
+//TODO reInitialize.
 Sophus::SE3 VisualSLAM::estimate3D2DFrontEndWithOpicalFlow(cv::Mat leftImage_,
                                                            cv::Mat rightImage,
                                                            std::vector<cv::Point2f> &previousFrame2DPoints,
@@ -77,7 +77,7 @@ Sophus::SE3 VisualSLAM::estimate3D2DFrontEndWithOpicalFlow(cv::Mat leftImage_,
 
   if (previousFrame2DPoints.empty()) {
     std::cout << "The first image " << std::endl;
-    //TO DO Harris Detection
+    //TODO Harris Detection.
 
     cv::goodFeaturesToTrack(leftImage,
                             currFrame2DPoints,
@@ -99,7 +99,7 @@ Sophus::SE3 VisualSLAM::estimate3D2DFrontEndWithOpicalFlow(cv::Mat leftImage_,
     cv::imshow("leftImage",leftImage);
     cv::waitKey();
      */
-    //TO DO getDisparityMapFromCurrImage
+    //TODO getDisparityMapFromCurrImage.
     // Define the first image as the world coordinate
     std::vector<cv::Point3f> p3d;
     VO.generateDisparityMap(leftImage, rightImage);
@@ -117,8 +117,8 @@ Sophus::SE3 VisualSLAM::estimate3D2DFrontEndWithOpicalFlow(cv::Mat leftImage_,
     }
 //        std::cout<<"p3d size "<<p3d.size()<<"  currFrame2DPoints size "<<currFrame2DPoints.size()<<std::endl;
 
-    //TO DO add3DPoints (p3d, p2dToP3dIndices)
-    //TO DO add2DPoints (p2d, p2dToP3dIndices)
+    //TODO add3DPoints (p3d, p2dToP3dIndices).
+    //TODO add2DPoints (p2d, p2dToP3dIndices).
     std::vector<int> p2dToP3dIndices(p3d.size());
     std::iota(p2dToP3dIndices.begin(), p2dToP3dIndices.end(), 0);
     /*
@@ -139,7 +139,7 @@ Sophus::SE3 VisualSLAM::estimate3D2DFrontEndWithOpicalFlow(cv::Mat leftImage_,
     return pose;
   }
 
-  //TO DO featureTracking
+  //TODO featureTracking.
   std::vector<uchar> status;
   std::vector<int> p2dToP3dIndices;
   status = VO.corr2DPointsFromPreFrame2DPoints(previousImage,
@@ -149,7 +149,7 @@ Sophus::SE3 VisualSLAM::estimate3D2DFrontEndWithOpicalFlow(cv::Mat leftImage_,
   std::vector<cv::Point2f> trackedCurrFrame2DPoints, trackedPreviousFrame2DPoints;
   for (int i = 0; i < status.size(); ++i) {
     if (status[i]==1) {
-      //TO DO delete 3D points in the previousFrame
+      //TODO delete 3D points in the previousFrame.
       trackedPreviousFrame2DPoints.push_back(previousFrame2DPoints[i]);
       trackedCurrFrame2DPoints.push_back(currFrame2DPoints[i]);
       p2dToP3dIndices.push_back(i);
@@ -157,8 +157,8 @@ Sophus::SE3 VisualSLAM::estimate3D2DFrontEndWithOpicalFlow(cv::Mat leftImage_,
   }
 
   map.add2DPoints(trackedCurrFrame2DPoints, p2dToP3dIndices, false);
-  //TO DO getDisparityMapFromPreviousImage
-  //TO DO getDepth3DPointsFromPreviousImage
+  //TODO getDisparityMapFromPreviousImage.
+  //TODO getDepth3DPointsFromPreviousImage.
   std::vector<cv::Point3f> p3DCurrFrame;
   VO.generateDisparityMap(leftImage, rightImage);
   p3DCurrFrame = VO.getDepth3DPointsFromCurrImage(trackedCurrFrame2DPoints, K);
@@ -169,12 +169,12 @@ Sophus::SE3 VisualSLAM::estimate3D2DFrontEndWithOpicalFlow(cv::Mat leftImage_,
 //    std::cout<<"p2d size "<<trackedPreviousFrame2DPoints.size() << std::endl;
 //    std::cout<<"p3d size  "<<p3DCurrFrame.size()<<std::endl;
 
-  //TO DO poseEstimate3D2DPnp
+  //TODO poseEstimate3D2DPnp.
   pose = VO.poseEstimate2D3DPNP(p3DCurrFrame, trackedPreviousFrame2DPoints, K, prePose);
 
-  //TO DO reInitial
+  //TODO reInitial.
   if (VO.getReInitial()) {
-    //TO DO Harris Detection
+    //TODO Harris Detection.
     std::cout << "re-initial " << std::endl;
     currFrame2DPoints.clear();
     cv::goodFeaturesToTrack(leftImage,
@@ -190,7 +190,7 @@ Sophus::SE3 VisualSLAM::estimate3D2DFrontEndWithOpicalFlow(cv::Mat leftImage_,
     cv::cornerSubPix(leftImage, currFrame2DPoints, subPixel, cv::Size(-1, -1), termcrit);
 //        std::cout << "step1 check feature size " << currFrame2DPoints.size() << std::endl;
 
-    //TO DO getDisparityMapFromCurrImage
+    //TODO getDisparityMapFromCurrImage.
     std::vector<cv::Point3f> p3d;
     VO.generateDisparityMap(leftImage, rightImage);
     p3d = VO.getDepth3DPointsFromCurrImage(currFrame2DPoints, K);

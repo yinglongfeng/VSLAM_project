@@ -145,9 +145,9 @@ BundleAdjuster::BundleAdjuster() {}
 //    }
 //
 //
-//    // TO DO update3DPoints in map
+//    // TODO update3DPoints in map.
 //
-//    // TO DO setCumPose in map
+//    // TODO setCumPose in map.
 //
 //    return newPoseVector;
 //}
