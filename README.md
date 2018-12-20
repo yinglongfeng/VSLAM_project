@@ -1,5 +1,5 @@
 # VSLAM_project
-For the 3rd lib, have a reference of the orbslam2 github
+For the 3rd lib, have a reference of the [orbslam2](https://github.com/raulmur/ORB_SLAM2)
 
 ## uninstall old opencv
 1. cd /home/fyl/docker-3rdparty/3rdparty/opencv-3.0.0/build_x86_64
