@@ -28,10 +28,10 @@ class Map {
 
   std::vector<Sophus::SE3> getCumPose() const;
 
-  //TO DO add3DPoints
+  //TODO add3DPoints.
   void add3DPoints(std::vector<cv::Point3f> &p3d, std::vector<int> &p2dToP3dIndices);
 
-  //TO DO add2DPoints
+  //TODO add2DPoints.
   void add2DPoints(std::vector<cv::Point2f> &p2d, std::vector<int> &p2dToP3dIndices, bool reIntial);
 
   std::map<int, std::vector<std::pair<int, cv::Point2f >>> get2DPoints() const;

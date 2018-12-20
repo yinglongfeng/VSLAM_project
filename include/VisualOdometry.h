@@ -26,26 +26,26 @@ class VisualOdometry {
  public:
   VisualOdometry() {};
 
-  //TO DO harrisDection
-  //TO DO featureTracking
+  //TODO harrisDection.
+  //TODO featureTracking.
   std::vector<uchar> corr2DPointsFromPreFrame2DPoints(cv::Mat previousImage, cv::Mat currImage,
                                                       std::vector<cv::Point2f> &previousFrame2DPoints,
                                                       std::vector<cv::Point2f> &currFrame2DPoints);
-  //TO DO getDisparityMap
+  //TODO getDisparityMap.
   cv::Rect computeROIDisparityMap(cv::Size2i src_sz,
                                   cv::Ptr<cv::stereo::StereoBinarySGBM> matcher_instance);
   void generateDisparityMap(const cv::Mat image_left, const cv::Mat image_right);
-  //TO DO getDepth  currFrame2DPoints
+  //TODO getDepth  currFrame2DPoints.
   std::vector<cv::Point3f> getDepth3DPointsFromCurrImage(std::vector<cv::Point2f> &currFrame2DPoints,
                                                          Eigen::Matrix3d K);
 
-  //TO DO poseEstimate2D3DPnp
+  //TODO poseEstimate2D3DPnp.
   Sophus::SE3 poseEstimate2D3DPNP(std::vector<cv::Point3f> &p3d,
                                   std::vector<cv::Point2f> &p2d,
                                   Eigen::Matrix3d K,
                                   Sophus::SE3 prePose);
 
-  //TO DO getReIntial
+  //TODO getReIntial.
   bool getReInitial();
 
   void setReInitial();
