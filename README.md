@@ -18,6 +18,12 @@ For the 3rd lib, have a reference of the [orbslam2](https://github.com/raulmur/O
 ./testVSLAM ../../../VisualSLAM/data/00/image_0/  ../../../VisualSLAM/data/00/image_1/ 1000 ../../../VisualSLAM/data/00/calib.txt
 ```
 
+### Note: for the code style check, I use git hook
+```
+***/.git/hooks/pre-commit and pre-push
+```
+which I change it in order to  be suitable to the previous-company
+
 
 
 
